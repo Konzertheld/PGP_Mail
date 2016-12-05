@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<pluggable type="plugin">
+	<name>PGP Mail</name>
+	<license url="http://www.apache.org/licenses/LICENSE-2.0.html">Apache Software License 2.0</license>
+	<author url="http://habariproject.org/">The Habari Community</author>
+	<version>0.1</version>
+	<guid>eb413279-4db9-4cd6-813e-d83a6031c4d9</guid>
+	<url>http://habariproject.org/</url>
+	<description>Modifies how Habari sends mail. If recipient mail address is associated with a user and that user has a public key stored, use that to encrypt the mail. Requires that the server has write permission to the user directory.</description>
+	<copyright>2016</copyright>
+</pluggable>
