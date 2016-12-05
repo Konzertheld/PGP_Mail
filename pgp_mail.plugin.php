@@ -13,10 +13,30 @@ class PGP_Mail extends Plugin
 
 	public function filter_mail($mail)
 	{
-		// $gpg = $this->get_gpg();
-		// $gpg->addencryptkey($key['fingerprint']);
-		// $mail['message'] = $gpg->encrypt($mail['message']);
-		// $mail['headers']['foo'] = 'bar'; // Workaround for PHP bug where there is an unnecessary newline at the end of the headers which can cause an unencrypted newline before the encrypted content
+		$gpg = $this->get_gpg();
+		$list = $gpg->keyinfo($mail['to']);
+		// Iterate through keys. Definitely needs more checking
+		foreach($list as $key) {
+			if(isset($key['fingerprint'])) {
+				$fingerprint = $key['fingerprint'];
+			}
+			elseif(isset($key['subkeys'])) {
+				foreach($key['subkeys'] as $subkey) {
+					if(isset($subkey['fingerprint'])) {
+						$fingerprint = $subkey['fingerprint'];
+						break;
+					}
+				}
+			}
+			if(isset($fingerprint)) {
+				break;
+			}
+		}
+		if(isset($fingerprint)) {
+			$gpg->addencryptkey($fingerprint);
+			$mail['message'] = $gpg->encrypt($mail['message']);
+			$mail['headers']['foo'] = 'bar'; // Workaround for PHP bug where there is an unnecessary newline at the end of the headers which can cause an unencrypted newline before the encrypted content
+		}
 		return $mail;
 	}
 
@@ -40,7 +60,7 @@ class PGP_Mail extends Plugin
 	{
 		$gpg = $this->get_gpg();
 		$list = $gpg->keyinfo('');
-		print_r($list);
+		Utils::debug($list);
 	}
 
 	public function save_new_key($form)
